@@ -6,14 +6,9 @@ engine = HBP100()
 
 TEXT = "Patient John Doe, MRN: 123456, Phone: 9876543210"
 
-# Configuration
 WARMUP = 1_000
 ITERATIONS = 100_000
 ROUNDS = 5
-
-# ---------------------------------------------------------
-# Warm-up
-# ---------------------------------------------------------
 
 for _ in range(WARMUP):
     engine.process(TEXT)
