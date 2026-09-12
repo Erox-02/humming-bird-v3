@@ -5,18 +5,18 @@ use crate::Session;
 use crate::core::Pipeline;
 use crate::schemas::ProcessResult;
 
-pub struct SessionManager {
+pub struct Sesman {
     sessions: RwLock<HashMap<String, Arc<RwLock<Session>>>>,
 }
 
-impl SessionManager {
+impl Sesman {
     pub fn new() -> Self {
         Self {
             sessions: RwLock::new(HashMap::new()),
         }
     }
 
-    pub fn create_session(&self, intent: Option<&str>) -> String {
+    pub fn Crtses(&self, intent: Option<&str>) -> String {
         let timestamp = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap_or_default()
@@ -35,36 +35,36 @@ impl SessionManager {
         id
     }
 
-    pub fn get_session(&self, id: &str) -> Option<Arc<RwLock<Session>>> {
+    pub fn get_ses(&self, id: &str) -> Option<Arc<RwLock<Session>>> {
         self.sessions.read().unwrap()
             .get(id)
             .cloned()
     }
 
-    pub fn remove_session(&self, id: &str) -> bool {
+    pub fn rm_ses(&self, id: &str) -> bool {
         self.sessions.write().unwrap()
             .remove(id)
             .is_some()
     }
 
-    pub fn list_sessions(&self) -> Vec<String> {
+    pub fn ls_ses(&self) -> Vec<String> {
         self.sessions.read().unwrap()
             .keys()
             .cloned()
             .collect()
     }
 
-    pub fn session_count(&self) -> usize {
+    pub fn ses_cnt(&self) -> usize {
         self.sessions.read().unwrap().len()
     }
 
-    pub fn process_with_session(
+    pub fn prc_wses(
         &self,
         pipeline: &mut Pipeline,
         session_id: &str,
         text: &str,
     ) -> Option<ProcessResult> {
-        let session_arc = self.get_session(session_id)?;
+        let session_arc = self.get_ses(session_id)?;
         
         let intent;
         {
@@ -74,7 +74,7 @@ impl SessionManager {
         
         let mut session = session_arc.write().unwrap();
         
-        let result = pipeline.process_with_session(
+        let result = pipeline.prc_wses(
             text,
             &mut session,
             intent.as_deref(),
@@ -83,20 +83,20 @@ impl SessionManager {
         Some(result)
     }
 
-    pub fn restore_with_session(
+    pub fn res_wses(
         &self,
         pipeline: &mut Pipeline,
         session_id: &str,
         text: &str,
     ) -> Option<String> {
-        let session_arc = self.get_session(session_id)?;
+        let session_arc = self.get_ses(session_id)?;
         let session = session_arc.read().unwrap();
         
         Some(pipeline.restore_with_metadata(text, session.get_metadata()))
     }
 }
 
-impl Default for SessionManager {
+impl Default for Sesman {
     fn default() -> Self {
         Self::new()
     }

@@ -10,12 +10,12 @@ fn get_pattern() -> &'static Regex {
     })
 }
 
-pub struct PlaceholderRestorer {
+pub struct Plcres {
     vault: HashMap<String, String>,
     pattern: Regex,
 }
 
-impl PlaceholderRestorer {
+impl Plcres {
     pub fn new() -> Self {
         Self {
             vault: HashMap::with_capacity(64),
@@ -94,7 +94,7 @@ impl PlaceholderRestorer {
     }
 }
 
-impl Default for PlaceholderRestorer {
+impl Default for Plcres {
     fn default() -> Self {
         Self::new()
     }

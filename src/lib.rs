@@ -10,7 +10,7 @@ pub mod utils;
 use pyo3::prelude::*;
 
 pub use api::{HBP100, HBP100Session};
-pub use core::{Engine, Pipeline, SessionManager, MetadataVault};
+pub use core::{Engine, Pipeline, Sesman, MetadataVault};
 pub use schemas::{Session, ProcessResult, PrivacyDecision, Entity};
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

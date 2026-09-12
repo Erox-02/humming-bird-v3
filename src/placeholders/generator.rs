@@ -4,12 +4,12 @@ use std::collections::HashMap;
 use regex::Regex;
 use log;
 
-pub struct PlaceholderGenerator {
+pub struct Plcgen {
     counters: HashMap<String, usize>,
     vault: MetadataVault,
     pattern: Regex,
 }
-impl PlaceholderGenerator {
+impl Plcgen {
     pub fn new() -> Self {
         Self {
             counters: HashMap::new(),
@@ -60,7 +60,7 @@ impl PlaceholderGenerator {
     }
 }
 
-impl Default for PlaceholderGenerator {
+impl Default for Plcgen {
     fn default() -> Self {
         Self::new()
     }

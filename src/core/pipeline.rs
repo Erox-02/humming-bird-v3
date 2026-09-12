@@ -1,9 +1,9 @@
-use crate::extractors::ExtractorManager;
+use crate::extractors::Exman;
 use crate::placeholders::{
-    PlaceholderGenerator,
-    PlaceholderValidator,
-    PlaceholderRestorer,
-    SessionAwareGenerator,
+    Plcgen,
+    Plcval,
+    Plcres,
+    Sesawplcgen,
 };
 use crate::policy_engine::PrivacyPredictor;
 use crate::schemas::{Entity, PrivacyDecision, ProcessResult};
@@ -15,20 +15,20 @@ use std::collections::HashSet;
 pub type PipelineResult = ProcessResult;
 
 pub struct Pipeline {
-    pub extractor_manager: ExtractorManager,
-    pub generator: PlaceholderGenerator,
-    pub validator: PlaceholderValidator,
-    pub restorer: PlaceholderRestorer,
+    pub extractor_manager: Exman,
+    pub generator: Plcgen,
+    pub validator: Plcval,
+    pub restorer: Plcres,
     pub predictor: PrivacyPredictor,
 }
 
 impl Pipeline {
     pub fn new() -> Self {
         Self {
-            extractor_manager: ExtractorManager::new(),
-            generator: PlaceholderGenerator::new(),
-            validator: PlaceholderValidator::new(),
-            restorer: PlaceholderRestorer::new(),
+            extractor_manager: Exman::new(),
+            generator: Plcgen::new(),
+            validator: Plcval::new(),
+            restorer: Plcres::new(),
             predictor: PrivacyPredictor::new(),
         }
     }
@@ -39,8 +39,8 @@ impl Pipeline {
         self.generator.reset();
         self.validator.reset();
         self.restorer.reset();
-        log::debug!("Processing text (length: {} chars)", text.len());
-        let entities = self.extractor_manager.extract_all(text);
+        log::debug!("processing text ,length {}", text.len());
+        let entities = self.extractor_manager.exall(text);
         log::debug!("Extracted {} entities", entities.len());
         if entities.is_empty() {
             return ProcessResult::new(text, text);
@@ -51,9 +51,9 @@ impl Pipeline {
             text,
             intent,
         );
-        log::debug!("Predicted {} decisions", decisions.len());
+        log::debug!("predicted {} decisions", decisions.len());
         let (masked_text, metadata) = self.apply_masking(text, &entities, &decisions);
-        log::debug!("Masked {} entities", metadata.len());
+        log::debug!("masked {} entities", metadata.len());
         let allowed: HashSet<String> = metadata.keys().cloned().collect();
         self.validator.update_allowed(allowed);
         self.restorer.update_metadata(metadata.clone());
@@ -67,7 +67,7 @@ impl Pipeline {
             has_pii,
         }
     }
-    pub fn process_with_session(
+    pub fn prc_wses(
         &mut self,
         text: &str,
         session: &mut Session,
@@ -77,8 +77,8 @@ impl Pipeline {
             return ProcessResult::new(text, text);
         }
         self.validator.reset();
-        log::debug!("Processing text with session (length: {} chars)", text.len());
-        let entities = self.extractor_manager.extract_all(text);
+        log::debug!("processing text with session (length: {} chars)", text.len());
+        let entities = self.extractor_manager.exall(text);
         log::debug!("Extracted {} entities", entities.len());
         if entities.is_empty() {
             return ProcessResult::new(text, text);
@@ -88,14 +88,14 @@ impl Pipeline {
             text,
             intent,
         );
-        log::debug!("Predicted {} decisions", decisions.len());
+        log::debug!("predicted {} decisions", decisions.len());
         let (masked_text, metadata) = self.apply_masking_with_session(
             text,
             &entities,
             &decisions,
             session,
         );
-        log::debug!("Masked {} entities", metadata.len());
+        log::debug!("masked {} entities", metadata.len());
         let allowed: HashSet<String> = metadata.keys().cloned().collect();
         self.validator.update_allowed(allowed);
         let mut all_metadata = self.restorer.get_all_metadata();
@@ -131,7 +131,7 @@ impl Pipeline {
         let mut masked = text.to_string();
         let mut metadata = HashMap::new();
 
-        let mut generator = PlaceholderGenerator::new();
+        let mut generator = Plcgen::new();
 
         for &idx in &sorted_indices {
             let entity = &entities[idx];
@@ -170,7 +170,7 @@ impl Pipeline {
         let mut masked = text.to_string();
         let mut metadata = HashMap::new();
 
-        let mut generator = SessionAwareGenerator::new(session);
+        let mut generator = Sesawplcgen::new(session);
 
         for &idx in &sorted_indices {
             let entity = &entities[idx];
@@ -214,32 +214,32 @@ impl Pipeline {
         self.restorer.get_all_metadata()
     }
 
-    pub fn add_config_extractor(&mut self, config_json: &str) -> Result<(), String> {
-        self.extractor_manager.add_config_from_json(config_json)
+    pub fn add_conex(&mut self, config_json: &str) -> Result<(), String> {
+        self.extractor_manager.add_conjson(config_json)
     }
 
     pub fn add_config_extractor_from_file(&mut self, path: &str) -> Result<(), String> {
-        self.extractor_manager.add_config_from_file(path)
+        self.extractor_manager.add_conf(path)
     }
 
-    pub fn enable_extractor(&mut self, name: &str) -> bool {
-        self.extractor_manager.enable_extractor(name)
+    pub fn enex(&mut self, name: &str) -> bool {
+        self.extractor_manager.enex(name)
     }
 
-    pub fn disable_extractor(&mut self, name: &str) -> bool {
-        self.extractor_manager.disable_extractor(name)
+    pub fn dis_ex(&mut self, name: &str) -> bool {
+        self.extractor_manager.dis_ex(name)
     }
 
-    pub fn list_extractors(&self) -> Vec<String> {
-        self.extractor_manager.list_extractors()
+    pub fn ls_ex(&self) -> Vec<String> {
+        self.extractor_manager.ls_ex()
     }
 
     pub fn list_enabled_extractors(&self) -> Vec<String> {
-        self.extractor_manager.list_enabled()
+        self.extractor_manager.lsen()
     }
 
     pub fn reset_extractors(&mut self) {
-        self.extractor_manager.reset_to_defaults();
+        self.extractor_manager.rst_def();
     }
 }
 

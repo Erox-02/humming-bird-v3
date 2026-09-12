@@ -16,13 +16,13 @@ impl Engine {
         self.pipeline.process(text, intent)
     }
 
-    pub fn process_with_session(
+    pub fn prc_wses(
         &mut self,
         text: &str,
         session: &mut Session,
         intent: Option<&str>,
     ) -> ProcessResult {
-        self.pipeline.process_with_session(text, session, intent)
+        self.pipeline.prc_wses(text, session, intent)
     }
 
     pub fn restore(&self, text: &str) -> String {
@@ -49,24 +49,24 @@ impl Engine {
         &mut self.pipeline
     }
 
-    pub fn add_config_extractor(&mut self, config_json: &str) -> Result<(), String> {
-        self.pipeline.add_config_extractor(config_json)
+    pub fn add_conex(&mut self, config_json: &str) -> Result<(), String> {
+        self.pipeline.add_conex(config_json)
     }
 
     pub fn add_config_extractor_from_file(&mut self, path: &str) -> Result<(), String> {
         self.pipeline.add_config_extractor_from_file(path)
     }
 
-    pub fn enable_extractor(&mut self, name: &str) -> bool {
-        self.pipeline.enable_extractor(name)
+    pub fn enex(&mut self, name: &str) -> bool {
+        self.pipeline.enex(name)
     }
 
-    pub fn disable_extractor(&mut self, name: &str) -> bool {
-        self.pipeline.disable_extractor(name)
+    pub fn dis_ex(&mut self, name: &str) -> bool {
+        self.pipeline.dis_ex(name)
     }
 
-    pub fn list_extractors(&self) -> Vec<String> {
-        self.pipeline.list_extractors()
+    pub fn ls_ex(&self) -> Vec<String> {
+        self.pipeline.ls_ex()
     }
 
     pub fn list_enabled_extractors(&self) -> Vec<String> {

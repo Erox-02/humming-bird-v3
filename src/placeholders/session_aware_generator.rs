@@ -10,11 +10,11 @@ fn get_pattern() -> &'static Regex {
     })
 }
 
-pub struct SessionAwareGenerator<'a> {
+pub struct Sesawplcgen<'a> {
     session: &'a mut Session,
 }
 
-impl<'a> SessionAwareGenerator<'a> {
+impl<'a> Sesawplcgen<'a> {
     pub fn new(session: &'a mut Session) -> Self {
         Self {
             session,

@@ -2,12 +2,12 @@ use std::collections::HashSet;
 use regex::Regex;
 use log;
 
-pub struct PlaceholderValidator {
+pub struct Plcval {
     allowed: HashSet<String>,
     pattern: Regex,
 }
 
-impl PlaceholderValidator {
+impl Plcval {
     pub fn new() -> Self {
         Self {
             allowed: HashSet::new(),
@@ -76,7 +76,7 @@ impl PlaceholderValidator {
     }
 }
 
-impl Default for PlaceholderValidator {
+impl Default for Plcval {
     fn default() -> Self {
         Self::new()
     }
