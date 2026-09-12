@@ -1,8 +1,32 @@
 from hbp100 import HBP100
+import json
 import time
 import statistics
 
+EXTRACTORS = [
+    {
+        "name": "Name",
+        "entity_type": "NAME",
+        "pattern": r"\b[A-Z][a-z]+ [A-Z][a-z]+\b",
+        "confidence": 0.90,
+    },
+    {
+        "name": "MRN",
+        "entity_type": "ID",
+        "pattern": r"\b\d{6}\b",
+        "confidence": 0.95,
+    },
+    {
+        "name": "Phone",
+        "entity_type": "PHONE",
+        "pattern": r"\b\d{10}\b",
+        "confidence": 0.90,
+    },
+]
+
 engine = HBP100()
+for cfg in EXTRACTORS:
+    engine.add_extractor(json.dumps(cfg))
 
 TEXT = "Patient John Doe, MRN: 123456, Phone: 9876543210"
 
@@ -35,6 +59,7 @@ for round_no in range(ROUNDS):
         f"{avg_ns / 1_000:.3f} µs/text | "
         f"{1e9 / avg_ns:,.0f} texts/sec"
     )
+
 mean_ns = statistics.mean(results_ns)
 median_ns = statistics.median(results_ns)
 min_ns = min(results_ns)
