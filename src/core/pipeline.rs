@@ -5,21 +5,21 @@ use crate::placeholders::{
     Plcres,
     Sesawplcgen,
 };
-use crate::policy_engine::PrivacyPredictor;
-use crate::schemas::{Entity, PrivacyDecision, ProcessResult};
+use crate::policy_engine::Pvprd;
+use crate::schemas::{Entity, Pvdc, Prcsres};
 use crate::Session;
 use log;
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-pub type PipelineResult = ProcessResult;
+pub type Piperes = Prcsres;
 
 pub struct Pipeline {
     pub extractor_manager: Exman,
     pub generator: Plcgen,
     pub validator: Plcval,
     pub restorer: Plcres,
-    pub predictor: PrivacyPredictor,
+    pub predictor: Pvprd,
 }
 
 impl Pipeline {
@@ -29,12 +29,12 @@ impl Pipeline {
             generator: Plcgen::new(),
             validator: Plcval::new(),
             restorer: Plcres::new(),
-            predictor: PrivacyPredictor::new(),
+            predictor: Pvprd::new(),
         }
     }
-    pub fn process(&mut self, text: &str, intent: Option<&str>) -> ProcessResult {
+    pub fn process(&mut self, text: &str, intent: Option<&str>) -> Prcsres {
         if text.trim().is_empty() {
-            return ProcessResult::new(text, text);
+            return Prcsres::new(text, text);
         }
         self.generator.reset();
         self.validator.reset();
@@ -43,7 +43,7 @@ impl Pipeline {
         let entities = self.extractor_manager.exall(text);
         log::debug!("Extracted {} entities", entities.len());
         if entities.is_empty() {
-            return ProcessResult::new(text, text);
+            return Prcsres::new(text, text);
         }
 
         let decisions = self.predictor.predict_batch(
@@ -56,9 +56,9 @@ impl Pipeline {
         log::debug!("masked {} entities", metadata.len());
         let allowed: HashSet<String> = metadata.keys().cloned().collect();
         self.validator.update_allowed(allowed);
-        self.restorer.update_metadata(metadata.clone());
+        self.restorer.upd_md(metadata.clone());
         let has_pii = decisions.iter().any(|d| d.should_mask());
-        ProcessResult {
+        Prcsres {
             original_text: text.to_string(),
             masked_text,
             metadata,
@@ -72,16 +72,16 @@ impl Pipeline {
         text: &str,
         session: &mut Session,
         intent: Option<&str>,
-    ) -> ProcessResult {
+    ) -> Prcsres {
         if text.trim().is_empty() {
-            return ProcessResult::new(text, text);
+            return Prcsres::new(text, text);
         }
         self.validator.reset();
         log::debug!("processing text with session (length: {} chars)", text.len());
         let entities = self.extractor_manager.exall(text);
         log::debug!("Extracted {} entities", entities.len());
         if entities.is_empty() {
-            return ProcessResult::new(text, text);
+            return Prcsres::new(text, text);
         }
         let decisions = self.predictor.predict_batch(
             &entities,
@@ -100,9 +100,9 @@ impl Pipeline {
         self.validator.update_allowed(allowed);
         let mut all_metadata = self.restorer.get_all_metadata();
         all_metadata.extend(metadata.clone());
-        self.restorer.update_metadata(all_metadata);
+        self.restorer.upd_md(all_metadata);
         let has_pii = decisions.iter().any(|d| d.should_mask());
-        ProcessResult {
+        Prcsres {
             original_text: text.to_string(),
             masked_text,
             metadata,
@@ -116,7 +116,7 @@ impl Pipeline {
         &self,
         text: &str,
         entities: &[Entity],
-        decisions: &[PrivacyDecision],
+        decisions: &[Pvdc],
     ) -> (String, HashMap<String, String>) {
         let mut decision_map = HashMap::new();
         for (i, decision) in decisions.iter().enumerate() {
@@ -153,7 +153,7 @@ impl Pipeline {
         &self,
         text: &str,
         entities: &[Entity],
-        decisions: &[PrivacyDecision],
+        decisions: &[Pvdc],
         session: &mut Session,
     ) -> (String, HashMap<String, String>) {
         // Build map using index position instead of Entity reference
@@ -191,15 +191,15 @@ impl Pipeline {
         (masked, metadata)
     }
 
-    pub fn restore_placeholders(&self, text: &str) -> String {
+    pub fn res_ph(&self, text: &str) -> String {
         self.restorer.restore(text)
     }
 
-    pub fn restore_with_metadata(&self, text: &str, metadata: HashMap<String, String>) -> String {
-        self.restorer.restore_with_metadata(text, metadata)
+    pub fn res_wmd(&self, text: &str, metadata: HashMap<String, String>) -> String {
+        self.restorer.res_wmd(text, metadata)
     }
 
-    pub fn validate_response(&self, response: &str) -> (bool, Option<String>) {
+    pub fn vald_res(&self, response: &str) -> (bool, Option<String>) {
         self.validator.validate(response)
     }
 
@@ -218,7 +218,7 @@ impl Pipeline {
         self.extractor_manager.add_conjson(config_json)
     }
 
-    pub fn add_config_extractor_from_file(&mut self, path: &str) -> Result<(), String> {
+    pub fn add_conex_frm_file(&mut self, path: &str) -> Result<(), String> {
         self.extractor_manager.add_conf(path)
     }
 
@@ -234,11 +234,11 @@ impl Pipeline {
         self.extractor_manager.ls_ex()
     }
 
-    pub fn list_enabled_extractors(&self) -> Vec<String> {
+    pub fn ls_enex(&self) -> Vec<String> {
         self.extractor_manager.lsen()
     }
 
-    pub fn reset_extractors(&mut self) {
+    pub fn rstex(&mut self) {
         self.extractor_manager.rst_def();
     }
 }

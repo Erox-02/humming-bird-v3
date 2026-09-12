@@ -3,7 +3,7 @@ use std::sync::{Arc, RwLock};
 use sha2::{Sha256, Digest};
 use crate::Session;
 use crate::core::Pipeline;
-use crate::schemas::ProcessResult;
+use crate::schemas::Prcsres;
 
 pub struct Sesman {
     sessions: RwLock<HashMap<String, Arc<RwLock<Session>>>>,
@@ -27,7 +27,7 @@ impl Sesman {
         let id = format!("{:x}", hasher.finalize());
         let mut session = Session::new(id.clone());
         if let Some(intent) = intent {
-            session = session.with_intent(intent);
+            session = session.wth_int(intent);
         }
 
         self.sessions.write().unwrap()
@@ -63,7 +63,7 @@ impl Sesman {
         pipeline: &mut Pipeline,
         session_id: &str,
         text: &str,
-    ) -> Option<ProcessResult> {
+    ) -> Option<Prcsres> {
         let session_arc = self.get_ses(session_id)?;
         
         let intent;
@@ -92,7 +92,7 @@ impl Sesman {
         let session_arc = self.get_ses(session_id)?;
         let session = session_arc.read().unwrap();
         
-        Some(pipeline.restore_with_metadata(text, session.get_metadata()))
+        Some(pipeline.res_wmd(text, session.gt_md()))
     }
 }
 

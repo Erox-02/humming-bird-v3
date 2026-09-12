@@ -1,4 +1,4 @@
-use crate::extractors::config::{ConfigurableExtractor, ExtractorConfig};
+use crate::extractors::config::{Conex, Excon};
 use crate::schemas::Entity;
 use std::collections::HashSet;
 use log;

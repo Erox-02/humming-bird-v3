@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use crate::schemas::Entity;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PrivacyDecision {
+pub struct Pvdc {
     pub entity: Entity,
     pub decision: DecisionType,
     pub confidence: f32,
@@ -16,7 +16,7 @@ pub enum DecisionType {
     Keep,
 }
 
-impl PrivacyDecision {
+impl Pvdc {
     pub fn should_mask(&self) -> bool {
         self.decision == DecisionType::Mask
     }

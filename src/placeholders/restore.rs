@@ -43,7 +43,7 @@ impl Plcres {
         restored
     }
     
-    pub fn restore_with_metadata(&self, text: &str, metadata: HashMap<String, String>) -> String {
+    pub fn res_wmd(&self, text: &str, metadata: HashMap<String, String>) -> String {
         if text.is_empty() || metadata.is_empty() {
             return text.to_string();
         }
@@ -76,7 +76,7 @@ impl Plcres {
         self.pattern.is_match(text)
     }
     
-    pub fn update_metadata(&mut self, metadata: HashMap<String, String>) {
+    pub fn upd_md(&mut self, metadata: HashMap<String, String>) {
         self.vault = metadata;
     }
     

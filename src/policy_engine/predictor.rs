@@ -1,10 +1,10 @@
-use crate::schemas::{Entity, PrivacyDecision, DecisionType};
+use crate::schemas::{Entity, Pvdc, DecisionType};
 
-pub struct PrivacyPredictor {
+pub struct Pvprd {
     model: Option<Model>,
 }
 
-impl PrivacyPredictor {
+impl Pvprd {
     pub fn new() -> Self {
         Self { model: None }
     }
@@ -14,7 +14,7 @@ impl PrivacyPredictor {
         entities: &[Entity],
         text: &str,
         intent: Option<&str>,
-    ) -> Vec<PrivacyDecision> {
+    ) -> Vec<Pvdc> {
         entities
             .iter()
             .map(|entity| self.predict(entity, text, intent))
@@ -26,10 +26,10 @@ impl PrivacyPredictor {
         entity: &Entity,
         _text: &str,
         _intent: Option<&str>,
-    ) -> PrivacyDecision {
+    ) -> Pvdc {
         let should_mask = self.should_mask_by_type(&entity.entity_type);
 
-        PrivacyDecision {
+        Pvdc {
             entity: entity.clone(),
             decision: if should_mask { DecisionType::Mask } else { DecisionType::Keep },
             confidence: entity.confidence,
@@ -46,7 +46,7 @@ impl PrivacyPredictor {
     }
 }
 
-impl Default for PrivacyPredictor {
+impl Default for Pvprd {
     fn default() -> Self {
         Self::new()
     }

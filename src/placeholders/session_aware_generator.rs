@@ -22,12 +22,12 @@ impl<'a> Sesawplcgen<'a> {
     }
 
     pub fn generate(&mut self, entity_type: &str, value: &str) -> String {
-        let counter = self.session.get_next_counter(entity_type);
+        let counter = self.session.gt_nxtcou(entity_type);
         let placeholder = format!("[{}_{}]", entity_type, counter);
         
         let mut metadata = std::collections::HashMap::new();
         metadata.insert(placeholder.clone(), value.to_string());
-        self.session.update_metadata(metadata);
+        self.session.upd_md(metadata);
         
         placeholder
     }

@@ -26,7 +26,7 @@ impl Plcgen {
         log::debug!("Generated placeholder {} for {:?}", placeholder, entity.entity_type);
         placeholder
     }   
-    pub fn get_metadata(&self) -> HashMap<String, String> {
+    pub fn gt_md(&self) -> HashMap<String, String> {
         self.vault.get_all()
     }
     pub fn get_counter(&self, entity_type: &str) -> usize {

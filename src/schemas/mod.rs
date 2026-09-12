@@ -6,6 +6,6 @@ pub mod result;
 
 pub use session::Session;
 pub use entity::Entity;
-pub use decision::{PrivacyDecision, DecisionType};
+pub use decision::{Pvdc, DecisionType};
 pub use placeholder::Placeholder;
-pub use result::ProcessResult;
+pub use result::Prcsres;

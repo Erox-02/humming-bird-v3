@@ -1,18 +1,18 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use crate::schemas::{Entity, PrivacyDecision};
+use crate::schemas::{Entity, Pvdc};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ProcessResult {
+pub struct Prcsres {
     pub original_text: String,
     pub masked_text: String,
     pub metadata: HashMap<String, String>,
     pub entities: Vec<Entity>,
-    pub decisions: Vec<PrivacyDecision>,
+    pub decisions: Vec<Pvdc>,
     pub has_pii: bool,
 }
 
-impl ProcessResult {
+impl Prcsres {
     pub fn new(original: &str, masked: &str) -> Self {
         Self {
             original_text: original.to_string(),

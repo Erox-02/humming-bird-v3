@@ -30,13 +30,13 @@ impl Session {
         }
     }
 
-    pub fn with_intent(mut self, intent: impl Into<String>) -> Self {
+    pub fn wth_int(mut self, intent: impl Into<String>) -> Self {
         self.intent = Some(intent.into());
         self
     }
 
     #[inline]
-    pub fn update_metadata(&mut self, new_metadata: HashMap<String, String>) {
+    pub fn upd_md(&mut self, new_metadata: HashMap<String, String>) {
         self.metadata.extend(new_metadata);
         self.updated_at = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -45,14 +45,14 @@ impl Session {
     }
 
     #[inline]
-    pub fn get_next_counter(&mut self, entity_type: &str) -> usize {
+    pub fn gt_nxtcou(&mut self, entity_type: &str) -> usize {
         let counter = self.counters.entry(entity_type.to_string()).or_insert(0);
         *counter += 1;
         *counter
     }
 
     #[inline]
-    pub fn get_metadata(&self) -> HashMap<String, String> {
+    pub fn gt_md(&self) -> HashMap<String, String> {
         self.metadata.clone()
     }
 }

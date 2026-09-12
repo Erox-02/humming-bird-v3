@@ -64,12 +64,12 @@ impl HBP100 {
         self.engine.restore(text)
     }
 
-    pub fn restore_with_metadata(&self, text: &str, metadata: HashMap<String, String>) -> String {
-        self.engine.restore_with_metadata(text, metadata)
+    pub fn res_wmd(&self, text: &str, metadata: HashMap<String, String>) -> String {
+        self.engine.res_wmd(text, metadata)
     }
 
-    pub fn validate_response(&self, response: &str) -> (bool, Option<String>) {
-        self.engine.validate_response(response)
+    pub fn vald_res(&self, response: &str) -> (bool, Option<String>) {
+        self.engine.vald_res(response)
     }
 
     pub fn reset(&mut self) {
@@ -90,7 +90,7 @@ impl HBP100 {
     }
 
     pub fn add_extractor_from_file(&mut self, path: &str) -> PyResult<()> {
-        self.engine.add_config_extractor_from_file(path)
+        self.engine.add_conex_frm_file(path)
             .map_err(|e| pyo3::exceptions::PyValueError::new_err(e))
     }
 
@@ -107,11 +107,11 @@ impl HBP100 {
     }
 
     pub fn lsen(&self) -> Vec<String> {
-        self.engine.list_enabled_extractors()
+        self.engine.ls_enex()
     }
 
-    pub fn reset_extractors(&mut self) {
-        self.engine.reset_extractors();
+    pub fn rstex(&mut self) {
+        self.engine.rstex();
     }
 }
 
@@ -198,8 +198,8 @@ impl HBP100Session {
             .ok_or_else(|| pyo3::exceptions::PyRuntimeError::new_err("Session not found"))?;
 
         let session = session_arc.read().unwrap();
-        let metadata = session.get_metadata();
-        Ok(engine.engine.restore_with_metadata(text, metadata))
+        let metadata = session.gt_md();
+        Ok(engine.engine.res_wmd(text, metadata))
     }
 
     pub fn session_id(&self) -> String {

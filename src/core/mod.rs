@@ -4,6 +4,6 @@ mod metadata;
 mod session_manager;
 
 pub use engine::Engine;
-pub use pipeline::{Pipeline, PipelineResult};
+pub use pipeline::{Pipeline, Piperes};
 pub use metadata::MetadataVault;
 pub use session_manager::Sesman;

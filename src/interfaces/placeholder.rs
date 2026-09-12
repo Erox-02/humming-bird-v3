@@ -4,7 +4,7 @@ use std::collections::HashMap;
 pub trait PlaceholderEngine: Send + Sync {
     fn generate(&mut self, entity: &Entity) -> String;
     
-    fn get_metadata(&self) -> HashMap<String, String>;
+    fn gt_md(&self) -> HashMap<String, String>;
     
     fn get_value(&self, placeholder: &str) -> Option<String>;
     

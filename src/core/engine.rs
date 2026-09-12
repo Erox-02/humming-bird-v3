@@ -1,5 +1,5 @@
 use crate::core::Pipeline;
-use crate::schemas::ProcessResult;
+use crate::schemas::Prcsres;
 use crate::Session;
 use std::collections::HashMap;
 pub struct Engine {
@@ -12,7 +12,7 @@ impl Engine {
         }
     }
 
-    pub fn process(&mut self, text: &str, intent: Option<&str>) -> ProcessResult {
+    pub fn process(&mut self, text: &str, intent: Option<&str>) -> Prcsres {
         self.pipeline.process(text, intent)
     }
 
@@ -21,20 +21,20 @@ impl Engine {
         text: &str,
         session: &mut Session,
         intent: Option<&str>,
-    ) -> ProcessResult {
+    ) -> Prcsres {
         self.pipeline.prc_wses(text, session, intent)
     }
 
     pub fn restore(&self, text: &str) -> String {
-        self.pipeline.restore_placeholders(text)
+        self.pipeline.res_ph(text)
     }
 
-    pub fn restore_with_metadata(&self, text: &str, metadata: HashMap<String, String>) -> String {
-        self.pipeline.restore_with_metadata(text, metadata)
+    pub fn res_wmd(&self, text: &str, metadata: HashMap<String, String>) -> String {
+        self.pipeline.res_wmd(text, metadata)
     }
 
-    pub fn validate_response(&self, response: &str) -> (bool, Option<String>) {
-        self.pipeline.validate_response(response)
+    pub fn vald_res(&self, response: &str) -> (bool, Option<String>) {
+        self.pipeline.vald_res(response)
     }
 
     pub fn reset(&mut self) {
@@ -53,8 +53,8 @@ impl Engine {
         self.pipeline.add_conex(config_json)
     }
 
-    pub fn add_config_extractor_from_file(&mut self, path: &str) -> Result<(), String> {
-        self.pipeline.add_config_extractor_from_file(path)
+    pub fn add_conex_frm_file(&mut self, path: &str) -> Result<(), String> {
+        self.pipeline.add_conex_frm_file(path)
     }
 
     pub fn enex(&mut self, name: &str) -> bool {
@@ -69,12 +69,12 @@ impl Engine {
         self.pipeline.ls_ex()
     }
 
-    pub fn list_enabled_extractors(&self) -> Vec<String> {
-        self.pipeline.list_enabled_extractors()
+    pub fn ls_enex(&self) -> Vec<String> {
+        self.pipeline.ls_enex()
     }
 
-    pub fn reset_extractors(&mut self) {
-        self.pipeline.reset_extractors();
+    pub fn rstex(&mut self) {
+        self.pipeline.rstex();
     }
 }
 
