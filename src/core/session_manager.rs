@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
 use sha2::{Sha256, Digest};
