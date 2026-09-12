@@ -18,9 +18,9 @@ impl Exman {
 
     pub fn add_conex(&mut self, config: Excon) -> Result<(), String> {
         let extractor = Conex::new(config)?;
-        self.enabled.insert(extractor.clone());
-        self.extractors.push(extractor);
         log::info!("registered extractor {}", extractor.name());
+        self.enabled.insert(extractor.name().to_string());
+        self.extractors.push(extractor);
         Ok(())
     }
 
