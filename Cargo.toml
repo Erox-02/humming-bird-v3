@@ -35,3 +35,11 @@ pretty_assertions = "1.0"
 lto = true
 codegen-units = 1
 opt-level = 3
+
+[[bin]]
+name = "session"
+path = "dev/session.rs"
+
+[[bin]]
+name = "tst"
+path = "dev/tst.rs"
