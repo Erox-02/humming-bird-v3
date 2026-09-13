@@ -19,7 +19,7 @@ engine.add_extractor("""
     "name": "PAN_India",
     "entity_type": "PAN",
     "pattern": "[A-Z]{5}[0-9]{4}[A-Z]",
-    "confidence": 0.98
+    "confidence": 0.98  // [optional]
 }
 """)
 ```

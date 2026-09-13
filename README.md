@@ -20,6 +20,8 @@ see
 
 ### Sessions
 
+Sessions added and now working , check the api section .
+
 
 ### Eval
 
@@ -32,66 +34,159 @@ see
 
 ---
 
+## Tree
+
+.
+├── assets
+│   └── hbp100-v3.lgb
+├── Cargo.lock
+├── Cargo.toml
+├── dataset.json
+├── dev
+│   ├── session.rs
+│   ├── speed.py
+│   ├── test.py
+│   └── tst.rs
+├── LICENSE
+├── README.md
+└── src
+    ├── api.rs
+    ├── core
+    │   ├── engine.rs
+    │   ├── metadata.rs
+    │   ├── mod.rs
+    │   ├── pipeline.rs
+    │   └── session_manager.rs
+    ├── extractors
+    │   ├── config.rs
+    │   ├── manager.rs
+    │   ├── mod.rs
+    │   └── syntax.md
+    ├── interfaces
+    │   ├── mod.rs
+    │   ├── placeholder.rs
+    │   └── predictor.rs
+    ├── lib.rs
+    ├── ml
+    │   ├── dataset.rs
+    │   ├── features.rs
+    │   ├── model.rs
+    │   └── mod.rs
+    ├── placeholders
+    │   ├── generator.rs
+    │   ├── metadata.rs
+    │   ├── mod.rs
+    │   ├── restore.rs
+    │   ├── session_aware_generator.rs
+    │   └── validator.rs
+    ├── policy_engine
+    │   ├── context_builder.rs
+    │   ├── mod.rs
+    │   └── predictor.rs
+    ├── pyproject.toml
+    ├── schemas
+    │   ├── decision.rs
+    │   ├── entity.rs
+    │   ├── mod.rs
+    │   ├── placeholder.rs
+    │   ├── result.rs
+    │   └── session.rs
+    └── utils
+        ├── helpers.rs
+        ├── logger.rs
+        └── mod.rs
+
+12 directories, 47 files
+---
+
 ## Install
 
 ```bash
 cargo add hbp100          
-pip install      
+pip install (the github download link )      
 ```
 
-From source (Rust toolchain + Python 3.8+):
-
 ```bash
-git clone <repository> && cd humming-bird-v3
-maturin build --release
+git clone && cd humming-bird-v3
+maturin build --release .or. maturin develop --release
 python -m venv env
 pip install ./target/wh*/*
 ```
 
-> always use --release for speed
+> always use --release for speed , using build only no release decreases speed by a lot likely 10x times
 
 ---
 
 ## Py api
 
 ```python
-engine.process(text, intent=None, session_id=None)
-engine.restore(text, session_id=None)
-engine.restore_with_metadata(text, metadata)
-engine.validate_response(llm_output)     # -> (bool, Optional[str])
-
-engine.add_extractor(json_string)
-engine.add_extractor_from_file(path)
-engine.enable_extractor(name)            # -> bool
-engine.disable_extractor(name)           # -> bool
-engine.list_extractors()                 # -> list[str]
-engine.list_enabled()                    # -> list[str]
-engine.reset_extractors()                # clears all (no defaults)
+engine.process(text, intent=None)              # -> dict
+engine.restore(text)                            # -> str
+engine.res_wmd(text, metadata)                  # -> str
+engine.vald_res(response)                       # -> (bool, Optional[str])
+engine.add_extractor(config_json)               # -> None
+engine.add_extractor_from_file(path)            # -> None
+engine.enex(name)                               # -> bool
+engine.dis_ex(name)                             # -> bool
+engine.ls_ex()                                  # -> list[str]
+engine.lsen()                                   # -> list[str]
+engine.rstex()                                  # -> None
 ```
-
-The Python wrapper is *HBP100*
-
----
 
 ## Rust api
 
 ```rust
-
 engine.process(text: &str, intent: Option<&str>) -> ProcessResult
-
-
 engine.restore(text: &str) -> String
 engine.restore_with_metadata(text: &str, metadata: HashMap<String, String>) -> String
 engine.validate_response(text: &str) -> (bool, Option<String>)
 
+engine.add_conjson(json: &str) -> Result<(), String>
+engine.add_conf(path: &str) -> Result<(), String>
+engine.add_conex(config: Excon) -> Result<(), String>
+engine.enex(name: &str) -> bool
+engine.dis_ex(name: &str) -> bool
+engine.ls_ex() -> Vec<String>
+engine.lsen() -> Vec<String>
+engine.rst_def()
+```
 
-engine.add_config_extractor(json: &str) -> Result<(), String>
-engine.add_config_extractor_from_file(path: &str) -> Result<(), String>
-engine.enable_extractor(name: &str) -> bool
-engine.disable_extractor(name: &str) -> bool
-engine.list_extractors() -> Vec<String>
-engine.list_enabled_extractors() -> Vec<String>
-engine.reset_extractors()
+Excon is the config struct:
+
+```rust
+
+pub struct Excon {
+    pub name: String,
+    pub entity_type: String,
+    pub pattern: String,
+    pub confidence: Option<f32>,
+}
+
+```rust
+use hbp100::HBP100;
+use hbp100::extractors::Excon;
+
+let mut engine = HBP100::new();
+
+engine.add_conjson(r#"{
+    "name": "PAN_India",
+    "entity_type": "PAN",
+    "pattern": "[A-Z]{5}[0-9]{4}[A-Z]",
+    "confidence": 0.98
+}"#)?;
+
+let result = engine.process("My PAN is ABCDE1234F", None);
+```
+
+Or build the config in rust:
+
+```rust
+engine.add_conex(Excon {
+    name: "EmployeeNumber".into(),
+    entity_type: "EMPLOYEE_ID".into(),
+    pattern: "EMP-[0-9]{6}".into(),
+    confidence: Some(0.95),
+})?;
 ```
 
 ---
@@ -107,7 +202,7 @@ engine.process("Patient Jane Smith, MRN: 789012", session_id="chat")
 engine.restore("[MRN_1] and [MRN_2]", session_id="chat")
 
 ```
-encryrpted id in sha256 sum
+session ids are sha-256 hashes of a timestamp
 
 ## Example
 
@@ -175,4 +270,4 @@ Dipanjan Dutta
 
 ## Version
 
->3.1.2
+>3.2.1
