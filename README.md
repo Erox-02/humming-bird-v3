@@ -103,7 +103,7 @@ Sessions added and now working , check the api section .
 
 ```bash
 cargo add hbp100          
-pip install (the github download link for 3.2.1 release)
+pip install https://github.com/Erox-02/humming-bird-v3/releases/download/v3.2.1/hbp100-3.2.1-cp38-abi3-manylinux_2_34_x86_64.whl
 ```
 
 ```bash
