@@ -1,8 +1,3 @@
-# README.md
-
-Shorter. Nothing dropped. Rust API section added (it was missing entirely before).
-
-```markdown
 [![Crates.io](https://img.shields.io/crates/v/hbp100.svg)](https://crates.io/crates/hbp100)
 [![Rust](https://img.shields.io/badge/Rust-1.70+-orange.svg)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -20,7 +15,7 @@ the originals after the response comes back.
 ### Config based extractors
 
 
-see 
+    see 
 
 >ex*/syntax.md.
 
@@ -163,26 +158,28 @@ Mean:       45.2 µs/text
 Throughput: 22,116 texts/sec
 ```
 
+check the dev/test* and check the speed on your own
+
 ---
 
 ## Applications
 
-Healthcare document processing · insurance workflows · OCR pipelines ·
-AI assistants and LLM front-ends · customer support systems · data
-preprocessing before external API calls.
+- healthcare document processing 
+- insurance workflows 
+- ocr 
+- ai assistants and llm front-ends 
+- customer support systems 
+- data pre processign.
 
 ---
 
-## Limitations
+## Limits
 
+- Pyo3 overhead 
+- only single thread optimized 
+- model isnt absolute
+- user made extractors depends heavily on the user .
 
-
-
-
-
-## Roadmap
-
----
 
 ## License
 
@@ -198,5 +195,4 @@ Dipanjan Dutta
 
 ## Version
 
-3.1.2
-```
+>3.1.2
