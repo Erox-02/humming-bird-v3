@@ -103,14 +103,14 @@ Sessions added and now working , check the api section .
 
 ```bash
 cargo add hbp100          
-pip install (the github download link )      
+pip install (the github download link for 3.2.1 release)
 ```
 
 ```bash
 git clone && cd humming-bird-v3
-maturin build --release .or. maturin develop --release
 python -m venv env
-pip install ./target/wh*/*
+source env/bin/act*
+maturin develop --release
 ```
 
 > always use --release for speed , using build only no release decreases speed by a lot likely 10x times
@@ -190,19 +190,6 @@ engine.add_conex(Excon {
 ```
 
 ---
-
-## Sessions
-
-```python
-engine.process("Patient John Doe, MRN: 123456", session_id="chat")
-
-
-engine.process("Patient Jane Smith, MRN: 789012", session_id="chat")
-
-engine.restore("[MRN_1] and [MRN_2]", session_id="chat")
-
-```
-session ids are sha-256 hashes of a timestamp
 
 ## Example
 
