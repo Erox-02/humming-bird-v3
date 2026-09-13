@@ -4,8 +4,8 @@
 
 # hummin-bird
 
-hbp100 is a privacy system that sits between a user and a llm , it finds sensitive
-values, swaps them with placeholders , before the text leaves the process,and restores 
+hbp100 is a privacy system , it is placed between a user and a llm , it finds sensitive
+values, swaps them with placeholders , before the text leaves the local device ,and restores 
 the originals after the response comes back. 
 
 ---
@@ -14,8 +14,7 @@ the originals after the response comes back.
 
 ### Config based extractors
 
-
-    see 
+see 
 
 >ex*/syntax.md.
 
@@ -76,7 +75,6 @@ The Python wrapper is *HBP100*
 
 ## Rust api
 
-
 ```rust
 
 engine.process(text: &str, intent: Option<&str>) -> ProcessResult
@@ -96,13 +94,6 @@ engine.list_enabled_extractors() -> Vec<String>
 engine.reset_extractors()
 ```
 
-`ProcessResult` fields: `original_text`, `masked_text`, `metadata`,
-`entities`, `decisions`, `has_pii` — same data as the Python dict.
-
-Sessions from Rust go through `Sesman` (a session manager) with
-`Crtses`, `prc_wses`, and `res_wses`; see `dev/tst.rs` for a working
-example.
-
 ---
 
 ## Sessions
@@ -116,12 +107,7 @@ engine.process("Patient Jane Smith, MRN: 789012", session_id="chat")
 engine.restore("[MRN_1] and [MRN_2]", session_id="chat")
 
 ```
-
-Counters are per entity type per session. IDs are SHA256-derived.
-Sessions live in a `HashMap` in memory; they do not survive process
-exit.
-
----
+encryrpted id in sha256 sum
 
 ## Example
 
@@ -146,8 +132,6 @@ for d in result["decisions"]:
     print(f"{d['entity_type']} -> {d['decision']} ({d['confidence']})")
 ```
 
----
-
 ## Performance
 
 Release mode, Intel Core i5-1135G7, 3 extractors, 100,000 iterations × 5
@@ -160,7 +144,6 @@ Throughput: 22,116 texts/sec
 
 check the dev/test* and check the speed on your own
 
----
 
 ## Applications
 
@@ -171,7 +154,6 @@ check the dev/test* and check the speed on your own
 - customer support systems 
 - data pre processign.
 
----
 
 ## Limits
 
@@ -185,13 +167,11 @@ check the dev/test* and check the speed on your own
 
 MIT
 
----
 
 ## Author
 
 Dipanjan Dutta
 
----
 
 ## Version
 
